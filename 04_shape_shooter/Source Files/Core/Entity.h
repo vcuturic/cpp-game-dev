@@ -7,13 +7,15 @@
 
 class Entity
 {
-	std::string m_tag;
-	bool m_active;
-	size_t m_id;
+	friend class EntityManager;
+
+	std::string m_tag = "default";
+	bool m_active = true;
+	size_t m_id = 0;
+
+	Entity(const std::string &tag, size_t id);
 
 public:
-	Entity(std::string tag, bool active, size_t id);
-
 	std::shared_ptr<CTransform> cTransform;
 	std::shared_ptr<CShape> cShape;
 };

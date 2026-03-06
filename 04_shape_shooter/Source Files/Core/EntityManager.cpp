@@ -4,15 +4,17 @@ EntityManager::EntityManager()
 {
 }
 
-Entity& EntityManager::addEntity(const std::string& tag)
+std::shared_ptr<Entity> EntityManager::addEntity(const std::string& tag)
 {
-	Entity e(tag, true, m_totalEntities++);
-	m_toAdd.push_back(e);
+	auto entity = std::shared_ptr<Entity>(new Entity(tag, m_totalEntities++));
 
-	return m_toAdd.back();
+	m_toAdd.push_back(entity);
+
+	return entity;
 }
 
-std::vector<Entity>& EntityManager::getEntities()
+
+EntityVec & EntityManager::getEntities()
 {
     return m_entities;
 }

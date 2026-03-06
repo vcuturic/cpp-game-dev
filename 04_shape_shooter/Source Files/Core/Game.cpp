@@ -8,12 +8,18 @@ Game::Game()
 
 void Game::Run()
 {
-    auto& player = m_entityManager.addEntity("Player");
 
-    player.cTransform = std::make_shared<CTransform>();
-    player.cTransform->position = sf::Vector2f(100, 100);
+    /*
+    TODO: Make systems, like sRender() --> Run() function should only contain:
+    sRender(), sMovement() etc.
+    */
+    
+    auto player = m_entityManager.addEntity("Player");
 
-    player.cShape = std::make_shared<CShape>(15.0f, sf::Color::Red);
+    player->cTransform = std::make_shared<CTransform>();
+    player->cTransform->position = Vec2(100, 100);
+
+    player->cShape = std::make_shared<CShape>(15.0f, sf::Color::Red);
 
     while (m_window.isOpen())
     {
@@ -30,10 +36,11 @@ void Game::Run()
 
         for (auto& e : m_entityManager.getEntities())
         {
-            if (e.cShape && e.cTransform)
+            if (e->cShape && e->cTransform)
             {
-                e.cShape->circle.setPosition(e.cTransform->position);
-                m_window.draw(e.cShape->circle);
+                e->cShape->circle.setPosition(e->cTransform->position);
+
+                m_window.draw(e->cShape->circle);
             }
         }
 

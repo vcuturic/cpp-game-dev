@@ -132,6 +132,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\Components\CInput.cpp" />
     <ClCompile Include="Source Files\Components\CShape.cpp" />
     <ClCompile Include="Source Files\Components\CTransform.cpp" />
     <ClCompile Include="Source Files\Core\Entity.cpp" />
