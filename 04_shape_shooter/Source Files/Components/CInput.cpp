@@ -7,5 +7,5 @@ public:
 	bool right	= false;
 	bool shoot	= false;
 
-	CInput();
+	CInput() {}
 };

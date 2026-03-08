@@ -2,6 +2,7 @@
 #include <memory>
 #include "../Components/CTransform.cpp"
 #include "../Components/CShape.cpp"
+#include "../Components/CInput.cpp"
 
 #pragma once
 
@@ -18,4 +19,5 @@ class Entity
 public:
 	std::shared_ptr<CTransform> cTransform;
 	std::shared_ptr<CShape> cShape;
+	std::shared_ptr<CInput> cInput;
 };
