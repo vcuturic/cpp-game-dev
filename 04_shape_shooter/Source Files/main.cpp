@@ -2,7 +2,7 @@
 
 int main()
 {
-    Game game("config.txt");
+    Game game("Assets/config.txt");
     game.Run();
     return 0;
 }

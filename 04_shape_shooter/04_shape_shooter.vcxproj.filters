@@ -60,6 +60,7 @@
     <ClInclude Include="Source Files\Core\EntityManager.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source Files\Config.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\Config.txt">

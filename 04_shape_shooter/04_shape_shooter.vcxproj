@@ -142,6 +142,7 @@
     <ClCompile Include="Source Files\Math\Vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source Files\Config.h" />
     <ClInclude Include="Source Files\Core\Entity.h" />
     <ClInclude Include="Source Files\Core\EntityManager.h" />
     <ClInclude Include="Source Files\Core\Game.h" />

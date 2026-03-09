@@ -1,15 +1,85 @@
 #include "Game.h"
+#include <fstream>
+#include <iostream>
 
-Game::Game(const std::string& config)
+Game::Game(const std::string& configPath)
 {
-    init(config);
+    init(configPath);
 }
 
-void Game::init(const std::string& config)
+void Game::init(const std::string& configPath)
 {
-    m_window.create(sf::VideoMode({ WIDTH, HEIGHT }), "Shape Shooter");
+    std::ifstream file(configPath);
 
-    m_window.setFramerateLimit(FPS);
+    std::string type;
+
+    while (file >> type)
+    {
+        if (type == "Window")
+        {
+            file >> m_windowConfig.width
+                 >> m_windowConfig.height
+                 >> m_windowConfig.fps
+                 >> m_windowConfig.fullscreen;
+        }
+        else if (type == "Font")
+        {
+            file >> m_fontConfig.fontName
+                 >> m_fontConfig.fontRed
+                 >> m_fontConfig.fontGreen
+                 >> m_fontConfig.fontBlue;
+        }
+        else if (type == "Player")
+        {
+            file >> m_playerConfig.circleRadius
+                 >> m_playerConfig.collisionRadius
+                 >> m_playerConfig.fillRed
+                 >> m_playerConfig.fillGreen
+                 >> m_playerConfig.fillBlue
+                 >> m_playerConfig.outlineThickness
+                 >> m_playerConfig.outlineRed
+                 >> m_playerConfig.outlineGreen
+                 >> m_playerConfig.outlineBlue
+                 >> m_playerConfig.speed
+                 >> m_playerConfig.vertices;
+        }
+        else if (type == "Enemy")
+        {
+            file >> m_enemyConfig.circleRadius
+                 >> m_enemyConfig.collisionRadius
+                >> m_enemyConfig.outlineThickness
+                 >> m_enemyConfig.outlineRed
+                 >> m_enemyConfig.outlineGreen
+                 >> m_enemyConfig.outlineBlue
+                 >> m_enemyConfig.verticesMin
+                 >> m_enemyConfig.verticesMax
+                 >> m_enemyConfig.L
+                 >> m_enemyConfig.SI
+                 >> m_enemyConfig.speedMin
+                 >> m_enemyConfig.speedMax;
+        }
+        else if (type == "Bullet")
+        {
+            file >> m_bulletConfig.circleRadius
+                >> m_bulletConfig.collisionRadius
+                >> m_bulletConfig.fillRed
+                >> m_bulletConfig.fillGreen
+                >> m_bulletConfig.fillBlue
+                >> m_enemyConfig.outlineThickness
+                >> m_bulletConfig.outlineRed
+                >> m_bulletConfig.outlineGreen
+                >> m_bulletConfig.outlineBlue
+                >> m_bulletConfig.vertices
+                >> m_bulletConfig.speed
+                >> m_bulletConfig.L;
+        }
+    }
+
+    std::cout << m_windowConfig.width << " " << m_windowConfig.height << std::endl;
+
+    m_window.create(sf::VideoMode({ m_windowConfig.width, m_windowConfig.height}), "Shape Shooter");
+
+    m_window.setFramerateLimit(m_windowConfig.fps);
 
     SpawnPlayer();
 }
@@ -52,7 +122,6 @@ void Game::sUserInput()
         if (event->is<sf::Event::Closed>())
         {
             m_running = false;
-            m_window.close();
         }
 
         if (const auto& keyPressed = event->getIf<sf::Event::KeyPressed>())
@@ -134,7 +203,16 @@ void Game::SpawnPlayer()
     entity->cTransform = std::make_shared<CTransform>();
     entity->cTransform->position = Vec2(100, 100);
 
-    entity->cShape = std::make_shared<CShape>(15.0f, sf::Color::Red);
+    entity->cShape = std::make_shared<CShape>(m_playerConfig.circleRadius
+                                                , m_playerConfig.fillRed
+                                                , m_playerConfig.fillGreen
+                                                , m_playerConfig.fillBlue
+                                                , m_playerConfig.outlineThickness
+                                                , m_playerConfig.outlineRed
+                                                , m_playerConfig.outlineGreen
+                                                , m_playerConfig.outlineBlue
+                                                , m_playerConfig.vertices
+                                            );
 
     entity->cInput = std::make_shared<CInput>();
 
