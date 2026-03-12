@@ -19,6 +19,8 @@ class Game {
 
     bool m_running = true;
     bool m_paused = false;
+    int m_currentFrame = 0;
+    int m_lastEnemySpawnTime = 0;
 public:
     Game(const std::string& configPath);
 
@@ -28,6 +30,9 @@ public:
     void sRender();
     void sUserInput();
     void sMovement();
+    void sEnemySpawner();
 
     void SpawnPlayer();
+    void SpawnEnemy();
+    void SpawnBullet(const std::shared_ptr<Entity>& source, const Vec2& target);
 };

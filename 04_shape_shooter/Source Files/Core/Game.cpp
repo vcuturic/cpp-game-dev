@@ -65,12 +65,12 @@ void Game::init(const std::string& configPath)
                 >> m_bulletConfig.fillRed
                 >> m_bulletConfig.fillGreen
                 >> m_bulletConfig.fillBlue
-                >> m_enemyConfig.outlineThickness
+                >> m_bulletConfig.outlineThickness
                 >> m_bulletConfig.outlineRed
                 >> m_bulletConfig.outlineGreen
                 >> m_bulletConfig.outlineBlue
-                >> m_bulletConfig.vertices
                 >> m_bulletConfig.speed
+                >> m_bulletConfig.vertices
                 >> m_bulletConfig.L;
         }
     }
@@ -92,7 +92,10 @@ void Game::Run()
         
         sUserInput();
         sMovement();
+        sEnemySpawner();
         sRender();
+
+        m_currentFrame++;
     }
 }
 
@@ -105,6 +108,9 @@ void Game::sRender()
         if (e->cShape && e->cTransform)
         {
             e->cShape->circle.setPosition(e->cTransform->position);
+
+            e->cTransform->angle += 1;
+            e->cShape->circle.setRotation(sf::degrees(e->cTransform->angle));
 
             m_window.draw(e->cShape->circle);
         }
@@ -163,6 +169,15 @@ void Game::sUserInput()
                 default: break;
             }
         }
+    
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        {           
+            Vec2 localMousePosition(sf::Mouse::getPosition(m_window));
+
+            std::cout << "left mouse clicked " << localMousePosition.x << " " << localMousePosition.y << std::endl;
+
+            SpawnBullet(m_player, localMousePosition);
+        }
     }
 }
 
@@ -196,6 +211,12 @@ void Game::sMovement()
     m_player->cTransform->position.y += m_player->cTransform->velocity.y;
 }
 
+void Game::sEnemySpawner()
+{
+    if(m_currentFrame - m_lastEnemySpawnTime >= 200)
+        SpawnEnemy();
+}
+
 void Game::SpawnPlayer()
 {
     auto entity = m_entityManager.addEntity("Player");
@@ -217,4 +238,49 @@ void Game::SpawnPlayer()
     entity->cInput = std::make_shared<CInput>();
 
     m_player = entity;
+}
+
+void Game::SpawnEnemy()
+{
+    auto entity = m_entityManager.addEntity("Enemy");
+
+    entity->cTransform = std::make_shared<CTransform>();
+
+    int eX = rand() % m_window.getSize().x;
+    int eY = rand() % m_window.getSize().y;
+
+    entity->cTransform->position = Vec2(eX, eY);
+
+    entity->cShape = std::make_shared<CShape>(m_playerConfig.circleRadius
+        , 0
+        , 0
+        , 255
+        , 0
+        , m_playerConfig.outlineRed
+        , m_playerConfig.outlineGreen
+        , m_playerConfig.outlineBlue
+        , 3
+    );
+
+    m_lastEnemySpawnTime = m_currentFrame;
+}
+
+void Game::SpawnBullet(const std::shared_ptr<Entity>& source, const Vec2& target)
+{
+    auto entity = m_entityManager.addEntity("Bullet");
+
+    entity->cTransform = std::make_shared<CTransform>(target, Vec2(0, 0), 0);
+
+    std::cout << "bullet conf:" << m_bulletConfig.circleRadius << std::endl;
+    
+    entity->cShape = std::make_shared<CShape>(m_bulletConfig.circleRadius
+        , m_bulletConfig.fillRed
+        , m_bulletConfig.fillGreen
+        , m_bulletConfig.fillBlue
+        , m_bulletConfig.outlineThickness
+        , m_bulletConfig.outlineRed
+        , m_bulletConfig.outlineGreen
+        , m_bulletConfig.outlineBlue
+        , m_bulletConfig.vertices
+    );
 }
